@@ -11,7 +11,8 @@ import { useRecoilState } from 'recoil';
 import { modalState, movieState } from '../atoms/modalAtom';
 import { Element, Genre, Movie } from '../typing';
 import ReactPlayer from 'react-player/lazy';
-import { FaPlay } from 'react-icons/fa';
+import { FaPause, FaPlay } from 'react-icons/fa';
+
 
 function Modal() {
     const [showModal, setShowModal] = useRecoilState(modalState);
@@ -19,6 +20,7 @@ function Modal() {
     const [trailer, setTrailer] = useState('');
     const [genres, setGenres] = useState<Genre[]>([]);
     const [muted, setMuted] = useState(true);
+    const [play, setPlay] = useState(false);
     const handleClose = () => {
         setShowModal(false);
     };
@@ -67,15 +69,28 @@ function Modal() {
                         width="100%"
                         height="100%"
                         style={{ position: 'absolute', top: '0', left: '0' }}
-                        playing
+                        playing={play}
                         muted={muted}
                     />
                     <div className="absolute bottom-10 flex w-full items-center justify-between px-10">
                         <div className="flex space-x-2">
-                            <button className="flex items-center gap-x-2 rounded bg-white px-8 text-xl font-bold text-black transition hover:bg-[#e6e6e6]">
-                                <FaPlay className="h-7 w-7 text-black" />
-                                Play
-                            </button>
+                            {play ? (
+                                <button
+                                    onClick={() => setPlay(!play)}
+                                    className="flex items-center gap-x-2 rounded bg-white px-8 text-xl font-bold text-black transition hover:bg-[#e6e6e6]"
+                                >
+                                    <FaPause className="h-7 w-7 text-black" />
+                                    Pause
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => setPlay(!play)}
+                                    className="flex items-center gap-x-2 rounded bg-white px-8 text-xl font-bold text-black transition hover:bg-[#e6e6e6]"
+                                >
+                                    <FaPlay className="h-7 w-7 text-black" />
+                                    Play
+                                </button>
+                            )}
                             <button className="modalButton">
                                 <PlusIcon className="h-7 w-7" />
                             </button>
@@ -95,32 +110,42 @@ function Modal() {
                         </button>
                     </div>
                 </div>
-                <div className='flex space-x-16 bg-[#181818] px-10 py-8 rounded-b-md'>
-                    <div className='space-y-6 text-lg'>
+                <div className="flex space-x-16 rounded-b-md bg-[#181818] px-10 py-8">
+                    <div className="space-y-6 text-lg">
                         <div className="flex items-center space-x-2 text-sm">
                             <p className="font-semibold text-green-400 ">
                                 {movie?.vote_average * 10}% Match
                             </p>
-                            <p className='font-light'>
+                            <p className="font-light">
                                 {movie?.release_date || movie?.first_air_date}
                             </p>
                             <div className="flex h-4 items-center justify-center rounded border border-white/40 px-1.5 text-sm">
                                 HD
                             </div>
                         </div>
-                        <div className='flex flex-col gap-x-10 gap-y-4 md:flex-row md:justify-between'>
-                            <p className='w-[75%]'>{movie?.overview}</p>
-                            <div className='flex flex-col text-sm space-y-3'>
+                        <div className="flex flex-col gap-x-10 gap-y-4 md:flex-row md:justify-between">
+                            <p className="w-full md:w-[75%]">
+                                {movie?.overview}
+                            </p>
+                            <div className="flex flex-col space-y-3 text-sm">
                                 <div>
-                                    <span className='text-[gray]'>Genres: </span>
-                                    {genres.map(genre => genre.name).join(', ')}
+                                    <span className="text-[gray]">
+                                        Genres:{' '}
+                                    </span>
+                                    {genres
+                                        .map((genre) => genre.name)
+                                        .join(', ')}
                                 </div>
                                 <div>
-                                    <span className='text-[gray]'>Original Language: </span>
+                                    <span className="text-[gray]">
+                                        Original Language:{' '}
+                                    </span>
                                     {movie?.original_language}
                                 </div>
                                 <div>
-                                    <span className='text-[gray]'>Totol Votes: </span>
+                                    <span className="text-[gray]">
+                                        Totol Votes:{' '}
+                                    </span>
                                     {movie?.vote_count}
                                 </div>
                             </div>
